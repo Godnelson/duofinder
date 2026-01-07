@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SwipeAction {
+  LIKE
+  DISLIKE
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  profile      Profile?
+
+  swipesFrom   Swipe[]  @relation("swipes_from")
+  swipesTo     Swipe[]  @relation("swipes_to")
+
+  matchesAs1   Match[]  @relation("match_user1")
+  matchesAs2   Match[]  @relation("match_user2")
+}
+
+model Profile {
+  userId         String   @id
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bio            String?  @db.Text
+  server         String
+  rankTier       String
+  rankDivision   String?
+  lp             Int      @default(0)
+
+  primaryRole    String
+  secondaryRole  String?
+
+  nickname       String
+  isMono         Boolean  @default(false)
+
+  mainChampionId Int?
+  mainChampion   Champion? @relation("profiles_main_champion", fields: [mainChampionId], references: [id], onDelete: SetNull)
+
+  updatedAt      DateTime @updatedAt
+
+  champions      ProfileChampion[]
+  tags           ProfileTag[]
+}
+
+model Champion {
+  id    Int    @id
+  name  String @unique
+
+  mainFor   Profile[]         @relation("profiles_main_champion")
+  inPools   ProfileChampion[]
+}
+
+model ProfileChampion {
+  profileUserId String
+  championId    Int
+
+  profile Profile  @relation(fields: [profileUserId], references: [userId], onDelete: Cascade)
+  champ   Champion @relation(fields: [championId], references: [id], onDelete: Cascade)
+
+  @@id([profileUserId, championId])
+  @@index([championId])
+}
+
+model Tag {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  category String?
+
+  profiles ProfileTag[]
+}
+
+model ProfileTag {
+  profileUserId String
+  tagId         Int
+
+  profile Profile @relation(fields: [profileUserId], references: [userId], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([profileUserId, tagId])
+  @@index([tagId])
+}
+
+model Swipe {
+  id         String      @id @default(uuid())
+  fromUserId String
+  toUserId   String
+  action     SwipeAction
+  createdAt  DateTime    @default(now())
+
+  fromUser User @relation("swipes_from", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser   User @relation("swipes_to", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+  @@index([toUserId, action, createdAt])
+  @@index([fromUserId, createdAt])
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  user1Id   String
+  user2Id   String
+  createdAt DateTime @default(now())
+
+  user1 User @relation("match_user1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2 User @relation("match_user2", fields: [user2Id], references: [id], onDelete: Cascade)
+
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+}
