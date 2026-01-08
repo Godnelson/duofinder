@@ -1,4 +1,8 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { PageLayout } from '@/components/Layout';
@@ -12,10 +16,26 @@ const navLinks = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      router.replace('/discover');
+      return;
+    }
+    setReady(true);
+  }, [router]);
+
+  if (!ready) {
+    return null;
+  }
+
   return (
     <PageLayout
       title="DuoFinder"
-      subtitle="Um fluxo simples para encontrar parceiros alinhados ao seu estilo de jogo."
+      subtitle="Encontre parceiros alinhados ao seu estilo de jogo e monte o duo perfeito."
       kicker="Bem-vindo"
       navLinks={navLinks}
       activeHref="/"
@@ -24,8 +44,8 @@ export default function Home() {
           <Link href="/login">
             <Button>Entrar</Button>
           </Link>
-          <Link href="/discover">
-            <Button variant="secondary">Ver feed</Button>
+          <Link href="/login">
+            <Button variant="secondary">Criar conta</Button>
           </Link>
         </>
       }
@@ -33,16 +53,16 @@ export default function Home() {
       <section className="section">
         <div className="split">
           <div>
-            <h2 className="card__title">Seu duo ideal em três passos</h2>
+            <h2 className="card__title">Seu duo ideal começa aqui</h2>
             <p className="muted">
-              Atualize seu perfil, descubra novos jogadores e libere o nick quando o match acontecer.
+              Complete seu perfil, descubra jogadores compatíveis e só libere o nick quando o match acontecer.
             </p>
             <div className="row">
-              <Link href="/me">
-                <Button>Completar perfil</Button>
-              </Link>
               <Link href="/discover">
-                <Button variant="ghost">Começar agora</Button>
+                <Button>Ver funcionalidades</Button>
+              </Link>
+              <Link href="/login">
+                <Button variant="ghost">Acessar conta</Button>
               </Link>
             </div>
           </div>
