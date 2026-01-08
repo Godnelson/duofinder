@@ -1,59 +1,108 @@
 'use client';
 
 import { useState } from 'react';
-import { api } from '@/lib/api';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { api } from '@/lib/api';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { Input } from '@/components/Input';
+import { PageLayout } from '@/components/Layout';
+
+const navLinks = [
+  { href: '/', label: 'Início' },
+  { href: '/discover', label: 'Discover' },
+  { href: '/likes', label: 'Likes' },
+  { href: '/matches', label: 'Matches' },
+];
 
 export default function LoginPage() {
-  const r = useRouter();
+  const router = useRouter();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
+    setLoading(true);
 
-    const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
-    const { accessToken } = await api<{ accessToken: string }>(endpoint, {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
+      const { accessToken } = await api<{ accessToken: string }>(endpoint, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
 
-    localStorage.setItem('accessToken', accessToken);
-    r.push('/discover');
+      localStorage.setItem('accessToken', accessToken);
+      router.push('/discover');
+    } catch (error) {
+      setErr(String((error as Error).message || error));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <main style={{ padding: 24 }}>
-      <h1>{mode === 'login' ? 'Login' : 'Criar conta'}</h1>
+    <PageLayout
+      title={mode === 'login' ? 'Login' : 'Criar conta'}
+      subtitle="Acesse sua conta para continuar no DuoFinder."
+      kicker="Acesso"
+      navLinks={navLinks}
+      activeHref="/login"
+      actions={
+        <Link href="/">
+          <Button variant="secondary">Voltar</Button>
+        </Link>
+      }
+    >
+      <section className="section" style={{ maxWidth: 520 }}>
+        <Card>
+          <div className="row">
+            <Button variant={mode === 'login' ? 'primary' : 'secondary'} onClick={() => setMode('login')}>
+              Login
+            </Button>
+            <Button
+              variant={mode === 'register' ? 'primary' : 'secondary'}
+              onClick={() => setMode('register')}
+            >
+              Criar conta
+            </Button>
+          </div>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-        <button onClick={() => setMode('login')} disabled={mode === 'login'}>
-          Login
-        </button>
-        <button onClick={() => setMode('register')} disabled={mode === 'register'}>
-          Register
-        </button>
-      </div>
+          <p className="muted">
+            {mode === 'login'
+              ? 'Use seu email e senha para acessar o feed.'
+              : 'Crie sua conta para começar a buscar duos.'}
+          </p>
 
-      <form onSubmit={submit} style={{ display: 'grid', gap: 12, maxWidth: 360 }}>
-        <input placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
-        <input
-          placeholder="senha (min 6)"
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <button type="submit">{mode === 'login' ? 'Entrar' : 'Criar'}</button>
-      </form>
+          <form onSubmit={submit} className="split">
+            <Input
+              label="Email"
+              placeholder="email"
+              value={email}
+              onChange={event => setEmail(event.target.value)}
+              type="email"
+              required
+            />
+            <Input
+              label="Senha"
+              placeholder="senha (min 6)"
+              type="password"
+              value={password}
+              onChange={event => setPassword(event.target.value)}
+              required
+            />
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Enviando...' : mode === 'login' ? 'Entrar' : 'Criar'}
+            </Button>
+          </form>
 
-      {err && <p style={{ color: 'red' }}>{err}</p>}
-
-      <p style={{ marginTop: 12 }}>
-        <a href="/">Home</a>
-      </p>
-    </main>
+          {err && <div className="alert alert--error">{err}</div>}
+        </Card>
+      </section>
+    </PageLayout>
   );
 }
