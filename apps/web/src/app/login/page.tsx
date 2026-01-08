@@ -37,6 +37,7 @@ export default function LoginPage() {
       });
 
       localStorage.setItem('accessToken', accessToken);
+      document.cookie = `accessToken=${accessToken}; Path=/; SameSite=Lax`;
       router.push('/discover');
     } catch (error) {
       setErr(String((error as Error).message || error));
