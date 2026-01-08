@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Button } from '@/components/Button';
@@ -78,11 +78,20 @@ export default function MePage() {
     }
   }
 
+  const completion = useMemo(() => {
+    if (!data) return 0;
+    const fields = [data.nickname, data.bio, data.primaryRole, data.rankTier, data.server];
+    const filled = fields.filter(value => value && String(value).trim().length > 0).length;
+    return Math.round((filled / fields.length) * 100);
+  }, [data]);
+
   return (
     <PageLayout
       title="Meu perfil"
       subtitle="Atualize suas informações para receber matches melhores."
+      kicker="Seu perfil"
       navLinks={navLinks}
+      activeHref="/me"
       actions={
         <Link href="/discover">
           <Button variant="secondary">Voltar ao feed</Button>
@@ -97,7 +106,7 @@ export default function MePage() {
           <div className="split">
             <Card>
               <h2 className="card__title">Resumo do perfil</h2>
-              <p className="muted">Esses dados aparecem no discover.</p>
+              <p className="card__description">Esses dados aparecem no discover.</p>
               <div className="stats">
                 <div className="stat">
                   <p className="stat__label">Servidor</p>
@@ -120,12 +129,21 @@ export default function MePage() {
                   </p>
                 </div>
               </div>
+              <div className="divider" />
+              <div className="row" style={{ justifyContent: 'space-between' }}>
+                <span className="badge">Perfil completo: {completion}%</span>
+                <Link href="/discover">
+                  <Button variant="ghost">Ver como aparece</Button>
+                </Link>
+              </div>
             </Card>
 
             <Card>
-              <h2 className="card__title">Editar dados</h2>
               <div className="row" style={{ justifyContent: 'space-between' }}>
-                <p className="muted">Salve para atualizar o feed.</p>
+                <div>
+                  <h2 className="card__title">Editar dados</h2>
+                  <p className="card__description">Salve para atualizar o feed.</p>
+                </div>
                 <Button onClick={save} disabled={saving}>
                   {saving ? 'Salvando...' : 'Salvar alterações'}
                 </Button>

@@ -32,7 +32,9 @@ export default function MatchesPage() {
     <PageLayout
       title="Matches"
       subtitle="Conexões desbloqueadas quando o like é mútuo."
+      kicker="Conexões"
       navLinks={navLinks}
+      activeHref="/matches"
       actions={
         <Link href="/discover">
           <Button variant="secondary">Explorar feed</Button>
@@ -40,11 +42,16 @@ export default function MatchesPage() {
       }
     >
       <section className="section">
+        <div className="section__header">
+          <h2 className="card__title">Seus matches</h2>
+          <p className="muted">Abra cada match para ver o nick liberado.</p>
+        </div>
+
         <div className="row" style={{ justifyContent: 'space-between' }}>
-          <div>
-            <h2 className="card__title">Seus matches</h2>
-            <p className="muted">Abra cada match para ver o nick liberado.</p>
-          </div>
+          <span className="badge">Total: {loading ? '—' : items.length}</span>
+          <Link href="/likes">
+            <Button variant="ghost">Ver likes recebidos</Button>
+          </Link>
         </div>
 
         {err && <div className="alert alert--error">{err}</div>}
@@ -66,7 +73,7 @@ export default function MatchesPage() {
                 })}
               </p>
               <Link href={`/matches/${match.id}`}>
-                <Button variant="ghost">Ver detalhes</Button>
+                <Button variant="secondary">Ver detalhes</Button>
               </Link>
             </Card>
           ))}

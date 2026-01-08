@@ -15,56 +15,79 @@ export default function Home() {
   return (
     <PageLayout
       title="DuoFinder"
-      subtitle="Encontre parceiros de duo com preferências e estilo de jogo alinhados ao seu."
+      subtitle="Um fluxo simples para encontrar parceiros alinhados ao seu estilo de jogo."
+      kicker="Bem-vindo"
       navLinks={navLinks}
+      activeHref="/"
       actions={
-        <Link href="/login">
-          <Button>Entrar</Button>
-        </Link>
+        <>
+          <Link href="/login">
+            <Button>Entrar</Button>
+          </Link>
+          <Link href="/discover">
+            <Button variant="secondary">Ver feed</Button>
+          </Link>
+        </>
       }
     >
       <section className="section">
         <div className="split">
           <div>
-            <h2 className="card__title">Matchmaking focado em sinergia</h2>
+            <h2 className="card__title">Seu duo ideal em três passos</h2>
             <p className="muted">
-              O DuoFinder combina perfil, elo, roles e campeões para aproximar pessoas com objetivos parecidos.
+              Atualize seu perfil, descubra novos jogadores e libere o nick quando o match acontecer.
             </p>
             <div className="row">
-              <Link href="/discover">
-                <Button>Explorar feed</Button>
-              </Link>
               <Link href="/me">
-                <Button variant="secondary">Atualizar perfil</Button>
+                <Button>Completar perfil</Button>
+              </Link>
+              <Link href="/discover">
+                <Button variant="ghost">Começar agora</Button>
               </Link>
             </div>
           </div>
           <div className="card-grid">
-            <Card>
-              <h3 className="card__title">Perfis detalhados</h3>
-              <p className="muted">Ranks, roles, tags e campeões favoritos em um só lugar.</p>
+            <Card className="card--soft">
+              <span className="badge badge--accent">Passo 1</span>
+              <h3 className="card__title">Perfil estratégico</h3>
+              <p className="card__description">
+                Defina elo, roles, bio e campeões para aparecer no feed certo.
+              </p>
             </Card>
-            <Card>
-              <h3 className="card__title">Likes inteligentes</h3>
-              <p className="muted">Só revela o nick quando o match acontece.</p>
+            <Card className="card--soft">
+              <span className="badge badge--accent">Passo 2</span>
+              <h3 className="card__title">Descoberta rápida</h3>
+              <p className="card__description">Curta ou descarte perfis em poucos segundos.</p>
             </Card>
-            <Card>
-              <h3 className="card__title">Converse rápido</h3>
-              <p className="muted">Acesse suas conexões em uma lista enxuta.</p>
+            <Card className="card--soft">
+              <span className="badge badge--accent">Passo 3</span>
+              <h3 className="card__title">Match confirmado</h3>
+              <p className="card__description">Veja o nick liberado e combine o horário de jogo.</p>
             </Card>
           </div>
         </div>
       </section>
 
       <section className="section section--compact">
-        <div className="row" style={{ justifyContent: 'space-between' }}>
-          <div>
-            <h3 className="card__title">Comece em poucos minutos</h3>
-            <p className="muted">Edite seu perfil e acompanhe o feed em tempo real.</p>
-          </div>
-          <Link href="/discover">
-            <Button variant="ghost">Ver feed</Button>
-          </Link>
+        <div className="grid-2">
+          <Card>
+            <h3 className="card__title">Acompanhe o feed</h3>
+            <p className="card__description">
+              Veja novos perfis do servidor BR e use os likes para formar duos mais rápido.
+            </p>
+            <Link href="/discover">
+              <Button variant="secondary">Ir para discover</Button>
+            </Link>
+          </Card>
+          <Card>
+            <h3 className="card__title">Organize seus matches</h3>
+            <p className="card__description">
+              Todos os matches aparecem em uma lista simples com acesso ao nick.
+            </p>
+            <Link href="/matches">
+              <Button variant="secondary">Ver matches</Button>
+            </Link>
+          </Card>
         </div>
       </section>
     </PageLayout>

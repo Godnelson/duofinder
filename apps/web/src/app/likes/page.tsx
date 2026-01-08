@@ -32,7 +32,9 @@ export default function LikesPage() {
     <PageLayout
       title="Likes recebidos"
       subtitle="Perfis que curtiram você recentemente."
+      kicker="Engajamento"
       navLinks={navLinks}
+      activeHref="/likes"
       actions={
         <Link href="/discover">
           <Button variant="secondary">Voltar ao feed</Button>
@@ -40,11 +42,13 @@ export default function LikesPage() {
       }
     >
       <section className="section">
+        <div className="section__header">
+          <h2 className="card__title">Quem já demonstrou interesse</h2>
+          <p className="muted">Dê like de volta para liberar o match.</p>
+        </div>
+
         <div className="row" style={{ justifyContent: 'space-between' }}>
-          <div>
-            <h2 className="card__title">Quem já demonstrou interesse</h2>
-            <p className="muted">Ao dar like de volta, você pode criar um match.</p>
-          </div>
+          <span className="badge">Total: {loading ? '—' : items.length}</span>
           <Link href="/matches">
             <Button>Ver matches</Button>
           </Link>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { PublicProfile } from '@duo/shared';
@@ -46,18 +46,44 @@ export default function DiscoverPage() {
     if (res.matched) alert('MATCH! Agora o nick será liberado em Matches.');
   }
 
+  const cards = useMemo(
+    () => [
+      { label: 'Perfis disponíveis', value: loading ? '—' : String(items.length) },
+      { label: 'Servidor', value: 'BR' },
+      { label: 'Última atualização', value: loading ? '—' : 'Agora' },
+    ],
+    [items.length, loading],
+  );
+
   return (
     <PageLayout
       title="Discover"
       subtitle="Explore novos perfis e deslize para encontrar seu duo ideal."
+      kicker="Feed principal"
       navLinks={navLinks}
+      activeHref="/discover"
       actions={<Button onClick={load}>Recarregar</Button>}
     >
       <section className="section">
+        <div className="section__header">
+          <h2 className="card__title">Seu feed personalizado</h2>
+          <p className="muted">Use o filtro padrão do servidor BR para achar perfis compatíveis.</p>
+        </div>
+
+        <div className="stats">
+          {cards.map(card => (
+            <div key={card.label} className="stat">
+              <p className="stat__label">{card.label}</p>
+              <p className="stat__value">{card.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="divider" />
+
         <div className="row" style={{ justifyContent: 'space-between' }}>
           <div>
-            <h2 className="card__title">Feed de perfis</h2>
-            <p className="muted">Resultados recentes do servidor BR.</p>
+            <p className="muted">Curta para liberar o match. Dislike remove do seu feed.</p>
           </div>
           <Link href="/likes">
             <Button variant="secondary">Ver likes</Button>

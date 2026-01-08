@@ -49,7 +49,9 @@ export default function LoginPage() {
     <PageLayout
       title={mode === 'login' ? 'Login' : 'Criar conta'}
       subtitle="Acesse sua conta para continuar no DuoFinder."
+      kicker="Acesso"
       navLinks={navLinks}
+      activeHref="/login"
       actions={
         <Link href="/">
           <Button variant="secondary">Voltar</Button>
@@ -69,6 +71,12 @@ export default function LoginPage() {
               Criar conta
             </Button>
           </div>
+
+          <p className="muted">
+            {mode === 'login'
+              ? 'Use seu email e senha para acessar o feed.'
+              : 'Crie sua conta para começar a buscar duos.'}
+          </p>
 
           <form onSubmit={submit} className="split">
             <Input

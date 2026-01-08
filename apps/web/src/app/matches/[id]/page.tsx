@@ -32,7 +32,9 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
     <PageLayout
       title="Match"
       subtitle="Detalhes do duo liberado."
+      kicker="Conexões"
       navLinks={navLinks}
+      activeHref="/matches"
       actions={
         <Link href="/matches">
           <Button variant="secondary">Voltar</Button>
@@ -44,29 +46,45 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
 
       {!loading && data && (
         <section className="section">
-          <Card>
-            <h2 className="card__title">Nick liberado</h2>
-            <p className="muted">{data.other.nickname}</p>
-            <div className="stats">
-              <div className="stat">
-                <p className="stat__label">Elo</p>
-                <p className="stat__value">
-                  {data.other.rankTier} {data.other.rankDivision ?? ''}
-                </p>
+          <div className="split">
+            <Card>
+              <h2 className="card__title">Nick liberado</h2>
+              <p className="card__description">{data.other.nickname}</p>
+              <div className="stats">
+                <div className="stat">
+                  <p className="stat__label">Elo</p>
+                  <p className="stat__value">
+                    {data.other.rankTier} {data.other.rankDivision ?? ''}
+                  </p>
+                </div>
+                <div className="stat">
+                  <p className="stat__label">Roles</p>
+                  <p className="stat__value">
+                    {data.other.primaryRole} / {data.other.secondaryRole ?? '—'}
+                  </p>
+                </div>
+                <div className="stat">
+                  <p className="stat__label">LP</p>
+                  <p className="stat__value">{data.other.lp}</p>
+                </div>
               </div>
-              <div className="stat">
-                <p className="stat__label">Roles</p>
-                <p className="stat__value">
-                  {data.other.primaryRole} / {data.other.secondaryRole ?? '—'}
-                </p>
+              <p>{data.other.bio ?? 'Sem bio cadastrada.'}</p>
+            </Card>
+            <Card className="card--soft">
+              <h2 className="card__title">Próximos passos</h2>
+              <p className="card__description">
+                Combine um horário com seu duo e mantenha o perfil atualizado para novos matches.
+              </p>
+              <div className="row">
+                <Link href="/discover">
+                  <Button variant="ghost">Voltar ao feed</Button>
+                </Link>
+                <Link href="/me">
+                  <Button variant="secondary">Editar perfil</Button>
+                </Link>
               </div>
-              <div className="stat">
-                <p className="stat__label">LP</p>
-                <p className="stat__value">{data.other.lp}</p>
-              </div>
-            </div>
-            <p>{data.other.bio ?? 'Sem bio cadastrada.'}</p>
-          </Card>
+            </Card>
+          </div>
         </section>
       )}
     </PageLayout>
