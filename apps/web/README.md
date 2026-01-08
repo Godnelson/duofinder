@@ -11,3 +11,6 @@ pnpm dev
 ```
 
 Web runs on `http://localhost:3000`.
+
+## Auth
+Rotas protegidas verificam o cookie `accessToken` e redirecionam para `/login` quando ausente.
