@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { PublicProfile } from '@duo/shared';
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageLayout } from '@/components/Layout';
 
 const navLinks = [
@@ -41,54 +44,66 @@ export default function LikesPage() {
         </Link>
       }
     >
-      <section className="section">
-        <div className="section__header">
-          <h2 className="card__title">Quem já demonstrou interesse</h2>
-          <p className="muted">Dê like de volta para liberar o match.</p>
-        </div>
+      <Card className="border-border/60 bg-card/60">
+        <CardHeader>
+          <CardTitle>Quem já demonstrou interesse</CardTitle>
+          <CardDescription>Dê like de volta para liberar o match.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <Badge>Total: {loading ? '—' : items.length}</Badge>
+            <Link href="/matches">
+              <Button>Ver matches</Button>
+            </Link>
+          </div>
 
-        <div className="row" style={{ justifyContent: 'space-between' }}>
-          <span className="badge">Total: {loading ? '—' : items.length}</span>
-          <Link href="/matches">
-            <Button>Ver matches</Button>
-          </Link>
-        </div>
+          {err && (
+            <Alert variant="destructive">
+              <AlertDescription>{err}</AlertDescription>
+            </Alert>
+          )}
+          {loading && (
+            <Alert>
+              <AlertDescription>Carregando likes...</AlertDescription>
+            </Alert>
+          )}
+          {!loading && !err && items.length === 0 && (
+            <Alert variant="outline">
+              <AlertDescription>Ainda não há likes por aqui. Continue no discover!</AlertDescription>
+            </Alert>
+          )}
 
-        {err && <div className="alert alert--error">{err}</div>}
-        {loading && <div className="alert">Carregando likes...</div>}
-        {!loading && !err && items.length === 0 && (
-          <div className="alert alert--empty">Ainda não há likes por aqui. Continue no discover!</div>
-        )}
-
-        <div className="card-grid">
-          {items.map(profile => (
-            <Card key={profile.userId}>
-              <div className="row" style={{ justifyContent: 'space-between' }}>
-                <div>
-                  <h3 className="card__title">{profile.rankTier}</h3>
-                  <p className="muted">
-                    {profile.primaryRole} / {profile.secondaryRole ?? '—'}
+          <div className="grid gap-5 lg:grid-cols-2">
+            {items.map(profile => (
+              <Card key={profile.userId} className="bg-background/80">
+                <CardHeader className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <CardTitle>{profile.rankTier}</CardTitle>
+                      <CardDescription>
+                        {profile.primaryRole} / {profile.secondaryRole ?? '—'}
+                      </CardDescription>
+                    </div>
+                    <Badge>LP: {profile.lp}</Badge>
+                  </div>
+                  <p className="text-sm text-foreground">
+                    {profile.bio ?? 'Sem bio disponível.'}
                   </p>
-                </div>
-                <span className="badge">LP: {profile.lp}</span>
-              </div>
-              <p>{profile.bio ?? 'Sem bio disponível.'}</p>
-              <div className="taglist">
-                {profile.tags.length ? (
-                  profile.tags.map(tag => (
-                    <span key={tag.id} className="badge">
-                      {tag.name}
-                    </span>
-                  ))
-                ) : (
-                  <span className="muted">Sem tags cadastradas.</span>
-                )}
-              </div>
-              {/* nickname nunca aqui */}
-            </Card>
-          ))}
-        </div>
-      </section>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.tags.length ? (
+                      profile.tags.map(tag => <Badge key={tag.id}>{tag.name}</Badge>)
+                    ) : (
+                      <span className="text-sm text-muted-foreground">Sem tags cadastradas.</span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </PageLayout>
   );
 }

@@ -4,8 +4,12 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { PublicProfile } from '@duo/shared';
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { PageLayout } from '@/components/Layout';
 
 const navLinks = [
@@ -64,96 +68,117 @@ export default function DiscoverPage() {
       activeHref="/discover"
       actions={<Button onClick={load}>Recarregar</Button>}
     >
-      <section className="section">
-        <div className="section__header">
-          <h2 className="card__title">Seu feed personalizado</h2>
-          <p className="muted">Use o filtro padrão do servidor BR para achar perfis compatíveis.</p>
-        </div>
-
-        <div className="stats">
-          {cards.map(card => (
-            <div key={card.label} className="stat">
-              <p className="stat__label">{card.label}</p>
-              <p className="stat__value">{card.value}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="divider" />
-
-        <div className="row" style={{ justifyContent: 'space-between' }}>
-          <div>
-            <p className="muted">Curta para liberar o match. Dislike remove do seu feed.</p>
+      <Card className="border-border/60 bg-card/60">
+        <CardHeader>
+          <CardTitle>Seu feed personalizado</CardTitle>
+          <CardDescription>
+            Use o filtro padrão do servidor BR para achar perfis compatíveis.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-3">
+            {cards.map(card => (
+              <div
+                key={card.label}
+                className="rounded-xl border border-border/60 bg-background/70 px-4 py-3"
+              >
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  {card.label}
+                </p>
+                <p className="mt-2 text-lg font-semibold">{card.value}</p>
+              </div>
+            ))}
           </div>
-          <Link href="/likes">
-            <Button variant="secondary">Ver likes</Button>
-          </Link>
-        </div>
 
-        {err && <div className="alert alert--error">{err}</div>}
-        {loading && <div className="alert">Carregando perfis...</div>}
-        {!loading && !err && items.length === 0 && (
-          <div className="alert alert--empty">Nenhum perfil encontrado. Tente recarregar em alguns minutos.</div>
-        )}
+          <Separator />
 
-        <div className="card-grid">
-          {items.map(profile => (
-            <Card key={profile.userId}>
-              <div className="row" style={{ justifyContent: 'space-between' }}>
-                <div>
-                  <h3 className="card__title">
-                    {profile.rankTier} {profile.rankDivision ?? ''}
-                  </h3>
-                  <p className="muted">
-                    {profile.primaryRole} / {profile.secondaryRole ?? '—'}
-                  </p>
-                </div>
-                <span className="badge">LP: {profile.lp}</span>
-              </div>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground">
+              Curta para liberar o match. Dislike remove do seu feed.
+            </p>
+            <Link href="/likes">
+              <Button variant="secondary">Ver likes</Button>
+            </Link>
+          </div>
 
-              <p>{profile.bio ?? 'Sem bio ainda.'}</p>
+          {err && (
+            <Alert variant="destructive">
+              <AlertDescription>{err}</AlertDescription>
+            </Alert>
+          )}
+          {loading && (
+            <Alert>
+              <AlertDescription>Carregando perfis...</AlertDescription>
+            </Alert>
+          )}
+          {!loading && !err && items.length === 0 && (
+            <Alert variant="outline">
+              <AlertDescription>
+                Nenhum perfil encontrado. Tente recarregar em alguns minutos.
+              </AlertDescription>
+            </Alert>
+          )}
 
-              <div>
-                <p className="field__label">Tags</p>
-                <div className="taglist">
-                  {profile.tags.length ? (
-                    profile.tags.map(tag => (
-                      <span key={tag.id} className="badge">
-                        {tag.name}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="muted">Nenhuma tag cadastrada.</span>
-                  )}
-                </div>
-              </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            {items.map(profile => (
+              <Card key={profile.userId} className="bg-background/80">
+                <CardHeader className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <CardTitle>
+                        {profile.rankTier} {profile.rankDivision ?? ''}
+                      </CardTitle>
+                      <CardDescription>
+                        {profile.primaryRole} / {profile.secondaryRole ?? '—'}
+                      </CardDescription>
+                    </div>
+                    <Badge>LP: {profile.lp}</Badge>
+                  </div>
+                  <p className="text-sm text-foreground">{profile.bio ?? 'Sem bio ainda.'}</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tags</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {profile.tags.length ? (
+                        profile.tags.map(tag => <Badge key={tag.id}>{tag.name}</Badge>)
+                      ) : (
+                        <span className="text-sm text-muted-foreground">
+                          Nenhuma tag cadastrada.
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
-              <div>
-                <p className="field__label">Campeões</p>
-                <div className="taglist">
-                  {profile.champions.length ? (
-                    profile.champions.map(champion => (
-                      <span key={champion.id} className="badge">
-                        {champion.name}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="muted">Nenhum campeão favorito.</span>
-                  )}
-                </div>
-              </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                      Campeões
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {profile.champions.length ? (
+                        profile.champions.map(champion => (
+                          <Badge key={champion.id}>{champion.name}</Badge>
+                        ))
+                      ) : (
+                        <span className="text-sm text-muted-foreground">
+                          Nenhum campeão favorito.
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
-              <div className="row">
-                <Button variant="secondary" onClick={() => swipe(profile.userId, 'DISLIKE')}>
-                  Dislike
-                </Button>
-                <Button onClick={() => swipe(profile.userId, 'LIKE')}>Like</Button>
-              </div>
-              {/* nickname propositalmente não existe aqui */}
-            </Card>
-          ))}
-        </div>
-      </section>
+                  <div className="flex flex-wrap gap-3">
+                    <Button variant="secondary" onClick={() => swipe(profile.userId, 'DISLIKE')}>
+                      Dislike
+                    </Button>
+                    <Button onClick={() => swipe(profile.userId, 'LIKE')}>Like</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </PageLayout>
   );
 }

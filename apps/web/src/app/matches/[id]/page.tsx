@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import type { MatchDetail } from '@duo/shared';
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageLayout } from '@/components/Layout';
 
 const navLinks = [
@@ -41,51 +44,64 @@ export default function MatchDetailPage({ params }: { params: { id: string } }) 
         </Link>
       }
     >
-      {err && <div className="alert alert--error">{err}</div>}
-      {loading && <div className="alert">Carregando match...</div>}
+      {err && (
+        <Alert variant="destructive">
+          <AlertDescription>{err}</AlertDescription>
+        </Alert>
+      )}
+      {loading && (
+        <Alert>
+          <AlertDescription>Carregando match...</AlertDescription>
+        </Alert>
+      )}
 
       {!loading && data && (
-        <section className="section">
-          <div className="split">
-            <Card>
-              <h2 className="card__title">Nick liberado</h2>
-              <p className="card__description">{data.other.nickname}</p>
-              <div className="stats">
-                <div className="stat">
-                  <p className="stat__label">Elo</p>
-                  <p className="stat__value">
-                    {data.other.rankTier} {data.other.rankDivision ?? ''}
-                  </p>
-                </div>
-                <div className="stat">
-                  <p className="stat__label">Roles</p>
-                  <p className="stat__value">
-                    {data.other.primaryRole} / {data.other.secondaryRole ?? '—'}
-                  </p>
-                </div>
-                <div className="stat">
-                  <p className="stat__label">LP</p>
-                  <p className="stat__value">{data.other.lp}</p>
-                </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card className="border-border/60 bg-card/70">
+            <CardHeader>
+              <Badge variant="accent" className="w-fit">
+                Nick liberado
+              </Badge>
+              <CardTitle className="text-2xl">{data.other.nickname}</CardTitle>
+              <CardDescription>{data.other.bio ?? 'Sem bio cadastrada.'}</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-border/60 bg-background/70 px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Elo</p>
+                <p className="mt-2 text-lg font-semibold">
+                  {data.other.rankTier} {data.other.rankDivision ?? ''}
+                </p>
               </div>
-              <p>{data.other.bio ?? 'Sem bio cadastrada.'}</p>
-            </Card>
-            <Card className="card--soft">
-              <h2 className="card__title">Próximos passos</h2>
-              <p className="card__description">
+              <div className="rounded-xl border border-border/60 bg-background/70 px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Roles</p>
+                <p className="mt-2 text-lg font-semibold">
+                  {data.other.primaryRole} / {data.other.secondaryRole ?? '—'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-background/70 px-4 py-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">LP</p>
+                <p className="mt-2 text-lg font-semibold">{data.other.lp}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/60 bg-background/80">
+            <CardHeader>
+              <CardTitle>Próximos passos</CardTitle>
+              <CardDescription>
                 Combine um horário com seu duo e mantenha o perfil atualizado para novos matches.
-              </p>
-              <div className="row">
-                <Link href="/discover">
-                  <Button variant="ghost">Voltar ao feed</Button>
-                </Link>
-                <Link href="/me">
-                  <Button variant="secondary">Editar perfil</Button>
-                </Link>
-              </div>
-            </Card>
-          </div>
-        </section>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-3">
+              <Link href="/discover">
+                <Button variant="ghost">Voltar ao feed</Button>
+              </Link>
+              <Link href="/me">
+                <Button variant="secondary">Editar perfil</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </PageLayout>
   );
