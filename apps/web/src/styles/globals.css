@@ -5,26 +5,26 @@
 @layer base {
   :root {
     color-scheme: dark;
-    --background: 221 65% 8%;
-    --foreground: 225 30% 96%;
-    --card: 221 35% 12%;
-    --card-foreground: 225 30% 96%;
-    --popover: 221 45% 10%;
-    --popover-foreground: 225 30% 96%;
-    --primary: 225 90% 65%;
-    --primary-foreground: 226 30% 95%;
-    --secondary: 223 25% 18%;
-    --secondary-foreground: 225 30% 96%;
-    --muted: 223 22% 20%;
-    --muted-foreground: 220 16% 70%;
-    --accent: 198 85% 55%;
-    --accent-foreground: 226 30% 95%;
+    --background: 22 24% 7%;
+    --foreground: 32 25% 94%;
+    --card: 24 22% 12%;
+    --card-foreground: 32 25% 94%;
+    --popover: 24 22% 10%;
+    --popover-foreground: 32 25% 94%;
+    --primary: 18 92% 58%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 24 20% 18%;
+    --secondary-foreground: 32 25% 94%;
+    --muted: 24 14% 18%;
+    --muted-foreground: 28 16% 72%;
+    --accent: 152 55% 46%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 70% 60%;
-    --destructive-foreground: 225 30% 96%;
-    --border: 223 18% 24%;
-    --input: 223 18% 24%;
-    --ring: 225 90% 65%;
-    --radius: 1.25rem;
+    --destructive-foreground: 0 0% 98%;
+    --border: 24 14% 22%;
+    --input: 24 14% 22%;
+    --ring: 18 92% 58%;
+    --radius: 0.95rem;
   }
 
   * {
@@ -33,6 +33,10 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    background-image: radial-gradient(circle at top, rgba(251, 146, 60, 0.22), transparent 55%),
+      radial-gradient(circle at 15% 20%, rgba(52, 211, 153, 0.18), transparent 45%),
+      radial-gradient(circle at 80% 10%, rgba(244, 63, 94, 0.15), transparent 45%);
+    background-attachment: fixed;
   }
 }
 

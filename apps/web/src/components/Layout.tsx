@@ -29,10 +29,10 @@ export function PageLayout({
 }: PageLayoutProps) {
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border/70 bg-background/60 backdrop-blur">
+      <header className="border-b border-border/60 bg-background/80 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
         <div className="container flex flex-col gap-5 py-10">
           {kicker && (
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
               {kicker}
             </span>
           )}
@@ -52,10 +52,10 @@ export function PageLayout({
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      'rounded-full border px-4 py-2 text-sm transition-colors',
+                      'rounded-full border px-4 py-2 text-sm font-medium transition-colors',
                       isActive
-                        ? 'border-primary/60 bg-primary/10 text-foreground'
-                        : 'border-border/70 bg-muted/20 text-muted-foreground hover:bg-muted/40 hover:text-foreground',
+                        ? 'border-primary/60 bg-primary/15 text-foreground shadow-[0_8px_18px_rgba(251,146,60,0.25)]'
+                        : 'border-border/70 bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground',
                     )}
                     aria-current={isActive ? 'page' : undefined}
                   >

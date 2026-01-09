@@ -53,7 +53,7 @@ const config: Config = {
         sm: 'calc(var(--radius) - 8px)',
       },
       boxShadow: {
-        glow: '0 0 40px rgba(88, 125, 255, 0.35)',
+        glow: '0 0 50px rgba(251, 146, 60, 0.45)',
       },
     },
   },
